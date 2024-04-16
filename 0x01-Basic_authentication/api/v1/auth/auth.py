@@ -16,23 +16,35 @@ class Auth:
     """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
-        that returns False
-
-        -path and excluded_paths
-        will be used later
+        return True
+        if the path is not in the list of strings excluded_paths:
+        excluded_paths contains string path always ending by a /
+        This method must be slash tolerant:
+        path=/api/v1/status
+        and
+        path=/api/v1/status/
+        must be returned False
+        if excluded_paths contains /api/v1/status/
         """
-        return False
+        if path is None or excluded_paths is None:
+            return True
+        if path[-1] != '/':
+            path += '/'
+        if path in excluded_paths:
+            return False
+
+        return True
 
     def authorization_header(self, request=None) -> str:
         """
-        that returns None
+        that return None
         - request will be the Flask request object
         """
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
-        that returns None
+        that return None
         - request will be the Flask request object
         """
         return None
