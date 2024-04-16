@@ -27,8 +27,9 @@ def stats() -> str:
     return jsonify(stats)
 
 
-@app_views.route('/api/v1/unauthorized/', methods=['GET'], strict_slashes=False)
-def get_Unauthorized()-> str:
+@app_views.route('/api/v1/unauthorized/',
+                 methods=['GET'], strict_slashes=False)
+def get_Unauthorized() -> str:
     """
     GET /api/v1/unauthorized
     This endpoint must raise a 401 error by using abort
