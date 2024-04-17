@@ -14,6 +14,20 @@ class Auth:
     Auth class
     a class to manage the API authentication.
     """
+    def header_key(self, request=None) -> str:
+        """
+        If request is None, returns None
+
+        If request doesn’t contain the header key Authorization,
+        returns None
+
+        Otherwise,
+        return the value of the header request Authorization
+        """
+        if request is None:
+            return None
+        return request.headers.get('Authorization')
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         return True
@@ -37,10 +51,21 @@ class Auth:
 
     def authorization_header(self, request=None) -> str:
         """
-        that return None
-        - request will be the Flask request object
+        If request is None, returns None
+
+        If request doesn’t contain the header key Authorization,
+        returns None
+
+        Otherwise,
+        return the value of the header request Authorization
         """
-        return None
+        if request is None:
+            return None
+        aut_header = request.headers.get('Authorization')
+        if not aut_header:
+            return None
+        else:
+            return aut_header
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
