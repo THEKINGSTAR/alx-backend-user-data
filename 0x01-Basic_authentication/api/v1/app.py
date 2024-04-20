@@ -53,7 +53,9 @@ def handler_before_request():
     """
     handler_before_reques
     """
-    if auth.authorization_header(request):
+    authorized_list = ['/api/v1/status/',
+                       '/api/v1/unauthorized/', '/api/v1/forbidden/']
+    if auth and auth.authorization_header(request):
         if auth.authorization_header(request) is None:
             abort(401)
         if not auth.current_user(request):

@@ -7,6 +7,7 @@ in the file api/v1/auth/auth.py
 
 from flask import request
 from typing import TypeVar, List
+User = TypeVar('User')
 
 
 class Auth:
@@ -67,7 +68,7 @@ class Auth:
         else:
             return aut_header
 
-    def current_user(self, request=None) -> TypeVar('User'):
+    def current_user(self, request=None) -> User:
         """
         that return None
         - request will be the Flask request object
