@@ -8,12 +8,20 @@ from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
 from api.v1.auth.auth import Auth
+from api.v1.auth.basic_auth import BasicAuth
 
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
-auth = Auth()
+
+
+AUTH_TYPE = getenv("AUTH_TYPE", "auth")
+
+if AUTH_TYPE == "":
+    auth = BasicAuth()
+else:
+    auth = Auth()
 
 
 @app.errorhandler(404)
@@ -48,8 +56,26 @@ def handler_before_request():
     if auth.authorization_header(request):
         if auth.authorization_header(request) is None:
             abort(401)
-        if auth.current_user(request) is None:
+        if not auth.current_user(request):
             abort(403)
+
+
+def _verify_credentials(request):
+    """
+    Extract the Authorization header value from the request
+    # No Authorization header present
+    # Perform authentication logic based on
+    the provided credentials in the Authorization header
+    # Example: You might decode the credentials and verify them against
+    a database or some other source
+    # If the credentials are valid,
+    return True; otherwise, return False
+    return False  # Placeholder implementation;
+    replace with your actual authentication logic
+    """
+    auth_header = auth.authorization_header(request)
+    if not auth_header:
+        return False
 
 
 if __name__ == "__main__":
