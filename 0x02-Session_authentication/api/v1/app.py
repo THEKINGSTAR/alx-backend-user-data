@@ -21,7 +21,7 @@ AUTH_TYPE = getenv("AUTH_TYPE", "auth")
 
 if AUTH_TYPE == "basic_auth":
     auth = BasicAuth()
-if AUTH_TYPE == "session_auth":
+elif AUTH_TYPE == "session_auth":
     auth = SessionAuth()
 else:
     auth = Auth()
