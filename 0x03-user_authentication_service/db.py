@@ -13,6 +13,9 @@ from user import User
 from typing import TypeVar
 
 
+key_args = ['id', 'email', 'hashed_password', 'session_id', 'reset_token']
+
+
 class DB:
     """
     DB class
@@ -35,7 +38,7 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email: str, hashed_passwor: str) -> User:
+    def add_user(self, email: str, hashed_password: str) -> User:
         """
         add_user method,
         which has two required string arguments:
@@ -45,11 +48,28 @@ class DB:
         The method should save the user to the database.
         No validations are required at this stage.
         """
-        if not email or not hashed_passwor:
+        if not email or not hashed_password:
             return
         Session = self._session
-        user = User(email=email, hashed_password=hashed_passwor)
+        user = User(email=email, hashed_password=hashed_password)
         Session.add(user)
         Session.commit()
         # Session.close()
         return user
+    
+    def find_user_by(**keyword):
+        """
+        This method takes in arbitrary keyword arguments
+        and
+        returns the first row found in the users table as filtered
+        by the method’s input arguments.
+        ensure that SQLAlchemy’s NoResultFound and InvalidRequestError
+        are raised when no results are found,
+        or when wrong query arguments are passed, respectively.
+        Warning:
+        NoResultFound has been moved from sqlalchemy.orm.exc to sqlalchemy.exc
+        between the version 1.3.x and 1.4.x of SQLAchemy
+        - please make sure you are importing it from sqlalchemy.orm.exc
+        """
+
+
