@@ -13,7 +13,6 @@ from user import User
 from typing import TypeVar
 
 
-
 class DB:
     """
     DB class
