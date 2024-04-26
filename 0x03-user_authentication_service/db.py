@@ -80,3 +80,28 @@ class DB:
             return Session.query(User).filter_by(**keyword).one()
         except Exception:
             raise NoResultFound
+
+    def update_user(self, user_id: int, **keyword) -> None:
+        """
+        DB.update_user method that takes as argument
+        a required user_id integer and arbitrary keyword arguments,
+        and
+        returns None.
+
+        The method will use find_user_by to locate the user to update,
+        then will update the user’s attributes as passed in the method’s
+        arguments then commit changes to the database.
+
+        If an argument that does not correspond to a user attribute is passed,
+        raise a ValueError.
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+        except Exception:
+            raise ValueError("User not found")
+        for key, value in keyword.items():
+            if hasattr(User, key):
+                setattr(User, key, value)
+            else:
+                raise ValueError(f"Invalid attribute: {key}")
+        self._session.commit()
