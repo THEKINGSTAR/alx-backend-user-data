@@ -13,7 +13,8 @@ from user import User
 from typing import TypeVar
 
 
-key_args = ['id', 'email', 'hashed_password', 'session_id', 'reset_token']
+key_args = ['id', 'email', 'hashed_password',
+            'session_id', 'reset_token']
 
 
 class DB:
@@ -57,7 +58,7 @@ class DB:
         # Session.close()
         return user
 
-    def find_user_by(**keyword):
+    def find_user_by(self, **keyword):
         """
         This method takes in arbitrary keyword arguments
         and
@@ -71,4 +72,11 @@ class DB:
         between the version 1.3.x and 1.4.x of SQLAchemy
         - please make sure you are importing it from sqlalchemy.orm.exc
         """
-        pass
+        for key in keyword:
+            if key not in key_args:
+                raise InvalidRequestError
+        Session = self._session
+        try:
+            return Session.query(User).filter_by(**keyword).one()
+        except Exception:
+            raise NoResultFound
