@@ -5,10 +5,13 @@ DB module
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
-
 from user import Base
 from user import User
+from typing import TypeVar
+
 
 
 class DB:
@@ -43,9 +46,11 @@ class DB:
         The method should save the user to the database.
         No validations are required at this stage.
         """
-
+        if not email or not hashed_passwor:
+            return
+        Session = self._session
         user = User(email=email, hashed_password=hashed_passwor)
-        self._session.add(user)
-        self._session.commit()
-
+        Session.add(user)
+        Session.commit()
+        # Session.close()
         return user
