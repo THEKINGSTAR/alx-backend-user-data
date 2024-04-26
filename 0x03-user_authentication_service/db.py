@@ -56,7 +56,7 @@ class DB:
         Session.commit()
         # Session.close()
         return user
-    
+
     def find_user_by(**keyword):
         """
         This method takes in arbitrary keyword arguments
@@ -71,5 +71,4 @@ class DB:
         between the version 1.3.x and 1.4.x of SQLAchemy
         - please make sure you are importing it from sqlalchemy.orm.exc
         """
-
-
+        pass
