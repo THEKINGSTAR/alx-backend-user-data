@@ -58,7 +58,7 @@ class DB:
         # Session.close()
         return user
 
-    def find_user_by(self, **keyword):
+    def find_user_by(self, **keyword) -> User:
         """
         This method takes in arbitrary keyword arguments
         and
