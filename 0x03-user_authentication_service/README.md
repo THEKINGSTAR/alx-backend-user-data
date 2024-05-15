@@ -360,9 +360,9 @@ if __name__ == "__main__":
 >- File: ```app.py```
  
 ## ```7. Register user (mandatory)```
-In this task, you will implement the end-point to register a user. Define a users function that implements the POST /users route.
+In this task, you will implement the end-point to register a user. Define a ```users``` function that implements the ```POST /users``` route.
 
-Import the Auth object and instantiate it at the root of the module as such:
+Import the ```Auth``` object and instantiate it at the root of the module as such:
 
 ```shell
 from auth import Auth
@@ -371,7 +371,7 @@ from auth import Auth
 AUTH = Auth()
 ```
 
-The end-point should expect two form data fields: "email" and "password". If the user does not exist, the end-point should register it and respond with the following JSON payload:
+The end-point should expect two form data fields: ```"email"``` and ```"password"```. If the user does not exist, the end-point should register it and respond with the following JSON payload:
 
 ```{"email": "<registered email>", "message": "user created"}```
 
@@ -380,9 +380,9 @@ If the user is already registered, catch the exception and return a JSON payload
 ```{"message": "email already registered"}```
 and return a 400 status code
 
-Remember that you should only use ```AUTH``` in this app. ```DB``` is a lower abstraction that is proxied by Auth.
+Remember that you should only use ```AUTH``` in this app. ```DB``` is a lower abstraction that is proxied by ```Auth```.
 
-Terminal 1:
+```Terminal 1:```
 
 ```shell
 bob@dylan:~$ python3 app.py 
@@ -394,7 +394,7 @@ bob@dylan:~$ python3 app.py
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ```
 
-Terminal 2:
+```Terminal 2:```
 
 ```shell
 bob@dylan:~$ curl -XPOST localhost:5000/users -d 'email=bob@me.com' -d 'password=mySuperPwd' -v
