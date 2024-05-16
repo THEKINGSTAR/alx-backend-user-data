@@ -175,9 +175,9 @@ In this task, you will connect to a secure ```holberton``` database to read a ``
 
 The database name is stored in ```PERSONAL_DATA_DB_NAME```.
 
-Implement a ```get_db``` function that returns a connector to the database (```mysql.connector.connection.MySQLConnection object```).
-    * Use the ```os``` module to obtain credentials from the environment
-    * Use the module ```mysql-connector-python``` to connect to the MySQL database (```pip3 install mysql-connector-python```)
+Implement a ```get_db``` function that returns a connector to the database (```mysql.connector.connection.MySQLConnection``` object).
+* Use the ```os``` module to obtain credentials from the environment
+* Use the module ```mysql-connector-python``` to connect to the MySQL database (```pip3 install mysql-connector-python```)
 
 ```shell
 bob@dylan:~$ cat main.sql

@@ -58,3 +58,41 @@ def get_logger() -> logging.Logger:
     stream_handler.setFormatter(RedactingFormatter())
     logger.addHandler(stream_handler)
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    function that returns
+    a connector to the database
+    (mysql.connector.connection.MySQLConnection object).
+
+    Use the os module to obtain credentials from the environment
+
+    Use the module mysql-connector-python
+    to connect to the MySQL database
+    (pip3 install mysql-connector-python)
+    """
+    user_name = environ.get("PERSONAL_DATA_DB_USERNAME", "root")
+    password = environ.get("PERSONAL_DATA_DB_PASSWORD", "")
+    host = environ.get("PERSONAL_DATA_DB_HOST", "localhost")
+    DB_NAME = environ.get(" PERSONAL_DATA_DB_NAME", "")
+
+    sqlStrng = mysql.connector.connection.MySQLConnection(user=user_name,
+                                                          password=password,
+                                                          host=host,
+                                                          database=DB_NAME)
+    return sqlStrng
+
+
+def main():
+    """
+    function will obtain a database connection
+    using get_db and retrieve all rows in the users table
+    and
+    display each row under a filtered format
+    Filtered fields: * name * email * phone * ssn * password
+    Only your main function should run when the module is executed.
+    """
+    if __name__ == main:
+        main()
+    # data = get_db(users)
