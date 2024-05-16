@@ -93,6 +93,8 @@ def main():
     Filtered fields: * name * email * phone * ssn * password
     Only your main function should run when the module is executed.
     """
-    if __name__ == main:
-        main()
-    # data = get_db(users)
+    pass
+
+
+if __name__ == '__main__':
+    main()
