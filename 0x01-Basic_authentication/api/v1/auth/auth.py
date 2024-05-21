@@ -40,13 +40,18 @@ class Auth:
         path=/api/v1/status/
         must be returned False
         if excluded_paths contains /api/v1/status/
+        method allowing * at the end of excluded paths.
         """
         if path is None or excluded_paths is None:
             return True
         if path[-1] != '/':
             path += '/'
-        if path in excluded_paths or ('*' in path[:-1]) in excluded_paths:
-            return False
+        for exclude_path in excluded_paths:
+            if exclude_path.endswith('*'):
+                if path.startswith(exclude_path[:-1]):
+                    return False
+            elif path == exclude_path:
+                return False
 
         return True
 
