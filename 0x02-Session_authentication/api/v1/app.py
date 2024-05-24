@@ -91,7 +91,7 @@ def handler_before_request():
         return
 
     if not auth.authorization_header(request)\
-       or not auth.session_cookie(request):
+       and not auth.session_cookie(request):
         abort(401)
 
     if not request.current_user:
