@@ -50,8 +50,8 @@ def forbidden(error) -> str:
     return jsonify({"error": "Forbidden"}), 403
 
 
-@app.before_request
-def handler_before_request():
+# @app.before_request
+def _handler_before_request():
     """
     handler_before_reques
     """
@@ -68,6 +68,34 @@ def handler_before_request():
             abort(401)
         if not auth.current_user(request):
             abort(403)
+
+
+@app.before_request
+def handler_before_request():
+    """
+    Handler to process before each request to check user authentication.
+    """
+    if auth is None:
+        return
+
+    request.current_user = auth.current_user(request)
+
+    excluded_paths = [
+        '/api/v1/status/',
+        '/api/v1/unauthorized/',
+        '/api/v1/forbidden/',
+        '/api/v1/auth_session/login/'
+    ]
+
+    if not auth.require_auth(request.path, excluded_paths):
+        return
+
+    if not (auth.authorization_header(request)
+            and auth.session_cookie(request)):
+        abort(401)
+
+    if not request.current_user:
+        abort(403)
 
 
 def _verify_credentials(request):
