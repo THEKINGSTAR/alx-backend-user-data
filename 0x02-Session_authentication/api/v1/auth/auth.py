@@ -7,6 +7,9 @@ in the file api/v1/auth/auth.py
 
 from flask import request
 from typing import TypeVar, List
+import os
+
+
 User = TypeVar('User')
 
 
@@ -74,3 +77,22 @@ class Auth:
         - request will be the Flask request object
         """
         return None
+
+    def session_cookie(self, request=None):
+        """
+        that returns a cookie value from a request:
+        Return None if request is None
+        Return the value of the cookie
+        named _my_session_id from request
+        - the name of the cookie must be defined by
+        the environment variable SESSION_NAME
+        You must use .get() built-in for accessing the cookie
+        in the request cookies dictionary
+        You must use the environment variable SESSION_NAME
+        to define the name of the cookie used for the Session ID
+        """
+        if request is None:
+            return None
+        session_name = os.getenv('SESSION_NAME')
+        cookie_value = request.cookies.get(session_name)
+        return cookie_value
