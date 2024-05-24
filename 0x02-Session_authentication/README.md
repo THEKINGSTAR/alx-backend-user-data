@@ -96,9 +96,9 @@ $ API_HOST=0.0.0.0 API_PORT=5000 python3 -m api.v1.app
 
 # ```Tasks```
 ## ```0. Et moi et moi et moi! (mandatory)```
-Copy all your work of the 0x06. Basic authentication project in this new folder.
+Copy all your work of the``` 0x06. Basic authentication``` project in this new folder.
 
-In this version, you implemented a Basic authentication for giving you access to all User endpoints:
+In this version, you implemented a ```Basic authentication``` for giving you access to all User endpoints:
 
 >- ```GET /api/v1/users```
 >- ```POST /api/v1/users```
@@ -108,13 +108,13 @@ In this version, you implemented a Basic authentication for giving you access to
 
 Now, you will add a new endpoint: ```GET /users/me``` to retrieve the authenticated ```User``` object.
 
-* Copy folders models and api from the previous project ```0x06. Basic authentication```
+* Copy folders ```models``` and ```api``` from the previous project ```0x06. Basic authentication```
 * Please make sure all mandatory tasks of this previous project are done at 100% because this project (and the rest of this track) will be based on it.
-* Update @app.before_request in api/v1/app.py:
-Assign the result of auth.current_user(request) to request.current_user
-* Update method for the route GET /api/v1/users/<user_id> in api/v1/views/users.py:
-  * If <user_id> is equal to me and request.current_user is None: abort(404)
-  * If <user_id> is equal to me and request.current_user is not None: return the authenticated User in a JSON response (like a normal case of GET /api/v1/users/<user_id> where <user_id> is a valid User ID)
+* Update ```@app.before_request``` in ```api/v1/app.py```:
+Assign the result of ```auth.current_user(request)``` to ```request.current_user```
+* Update method for the route ```GET /api/v1/users/<user_id>``` in ```api/v1/views/users.py```:
+  * If ```<user_id>``` is equal to ```me``` and ```request.current_user``` is None: ```abort(404)```
+  * If ```<user_id>``` is equal to ```me``` and ```request.current_user``` is not ```None```: return the authenticated User in a ```JSON``` response (like a normal case of ```GET /api/v1/users/<user_id>``` where ```<user_id>``` is a valid ```User``` ID)
   * Otherwise, keep the same behavior
 
 In the first terminal:
@@ -150,7 +150,9 @@ bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=basic_auth python3 -m api.
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/status"
 {
@@ -185,28 +187,33 @@ bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/users/me" -H "Authorization: Basic
 }
 bob@dylan:~$
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
 >- File: ```api/v1/app.py, api/v1/views/users.py```
    
 ## ```1. Empty session (mandatory)```
-Create a class SessionAuth that inherits from Auth. For the moment this class will be empty. It’s the first step for creating a new authentication mechanism:
+Create a class ```SessionAuth``` that inherits from ```Auth```. For the moment this class will be empty. It’s the first step for creating a new authentication mechanism:
  * validate if everything inherits correctly without any overloading
  * validate the “switch” by using environment variables
 
-Update api/v1/app.py for using SessionAuth instance for the variable auth depending of the value of the environment variable AUTH_TYPE, If AUTH_TYPE is equal to session_auth:
- * import SessionAuth from api.v1.auth.session_auth
- * create an instance of SessionAuth and assign it to the variable auth
+Update ```api/v1/app.py``` for using ```SessionAuth``` instance for the variable ```auth``` depending of the value of the environment variable ```AUTH_TYPE```, If ```AUTH_TYPE``` is equal to ```session_auth```:
+ * import ```SessionAuth``` from ```api.v1.auth.session_auth```
+ * create an instance of ```SessionAuth``` and assign it to the variable ```auth```
 Otherwise, keep the previous mechanism.
 
 In the first terminal:
+
 ```shell
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
+```
+
 In a second terminal:
 
+```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/status"
 {
   "status": "OK"
@@ -228,24 +235,27 @@ bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/users" -H "Authorization: Test"
 }
 bob@dylan:~$
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
 >- File: ```api/v1/auth/session_auth.py, api/v1/app.py```
    
 ## ```2. Create a session (mandatory)```
-Update SessionAuth class:
+Update ```SessionAuth``` class:
 
-Create a class attribute user_id_by_session_id initialized by an empty dictionary
-Create an instance method def create_session(self, user_id: str = None) -> str: that creates a Session ID for a user_id:
-Return None if user_id is None
-Return None if user_id is not a string
-Otherwise:
-Generate a Session ID using uuid module and uuid4() like id in Base
-Use this Session ID as key of the dictionary user_id_by_session_id - the value for this key must be user_id
-Return the Session ID
-The same user_id can have multiple Session ID - indeed, the user_id is the value in the dictionary user_id_by_session_id
-Now you an “in-memory” Session ID storing. You will be able to retrieve an User id based on a Session ID.
+* Create a class attribute ```user_id_by_session_id``` initialized by an empty dictionary
+* Create an instance method ```def create_session(self, user_id: str = None) -> str:``` that creates a Session ID for a ```user_id```:
+  * Return ```None``` if ```user_id``` is ```None```
+  * Return ```None``` if ```user_id``` is not a string
+  * Otherwise:
+    * Generate a Session ID using ```uuid``` module and ```uuid4()``` like ```id``` in ```Base```
+    * Use this Session ID as key of the dictionary ```user_id_by_session_id``` - the value for this key must be ```user_id```
+    * Return the Session ID
+  * The same ```user_id``` can have multiple Session ID - indeed, the ```user_id``` is the value in the dictionary ```user_id_by_session_id```
+
+Now you an “in-memory” Session ID storing. You will be able to retrieve an ```User``` id based on a Session ID.
+
 ```shell
 bob@dylan:~$ cat  main_1.py 
 #!/usr/bin/env python3
@@ -287,21 +297,24 @@ fghij => 69e45c25-ec89-4563-86ab-bc192dcc3b4f: {'61997a1b-3f8a-4b0f-87f6-19d5caf
 abcde => 02079cb4-6847-48aa-924e-0514d82a43f4: {'61997a1b-3f8a-4b0f-87f6-19d5cafee63f': 'abcde', '02079cb4-6847-48aa-924e-0514d82a43f4': 'abcde', '69e45c25-ec89-4563-86ab-bc192dcc3b4f': 'fghij'}
 bob@dylan:~$
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
 >- File: ```api/v1/auth/session_auth.py```
    
 ## ```3. User ID for Session ID (mandatory)```
-Update SessionAuth class:
+Update ```SessionAuth``` class:
 
-Create an instance method def user_id_for_session_id(self, session_id: str = None) -> str: that returns a User ID based on a Session ID:
+Create an instance method ```def user_id_for_session_id(self, session_id: str = None) -> str:``` that returns a ```User``` ID based on a Session ID:
 
-Return None if session_id is None
-Return None if session_id is not a string
-Return the value (the User ID) for the key session_id in the dictionary user_id_by_session_id.
-You must use .get() built-in for accessing in a dictionary a value based on key
-Now you have 2 methods (create_session and user_id_for_session_id) for storing and retrieving a link between a User ID and a Session ID.
+* Return ```None``` if ```session_id``` is None
+* Return ```None``` if ```session_id``` is not a string
+* Return the value (the User ID) for the key ```session_id``` in the dictionary ```user_id_by_session_id```.
+* You must use ```.get()``` built-in for accessing in a dictionary a value based on key
+
+Now you have 2 methods (```create_session``` and ```user_id_for_session_id```) for storing and retrieving a link between a ```User``` ID and a Session ID.
+
 ```shell
 bob@dylan:~$ cat main_2.py 
 #!/usr/bin/env python3
@@ -377,13 +390,15 @@ bob@dylan:~$
 >- File: ```api/v1/auth/session_auth.py```
    
 ## ```4. Session cookie (mandatory)```
-Update api/v1/auth/auth.py by adding the method def session_cookie(self, request=None): that returns a cookie value from a request:
+Update ```api/v1/auth/auth.py``` by adding the method ```def session_cookie(self, request=None):``` that returns a cookie value from a request:
 
-Return None if request is None
-Return the value of the cookie named _my_session_id from request - the name of the cookie must be defined by the environment variable SESSION_NAME
-You must use .get() built-in for accessing the cookie in the request cookies dictionary
-You must use the environment variable SESSION_NAME to define the name of the cookie used for the Session ID
+* Return ```None``` if ```request``` is ```None```
+* Return the value of the cookie named ```_my_session_id``` from ```request``` - the name of the cookie must be defined by the environment variable ```SESSION_NAME```
+* You must use ```.get()``` built-in for accessing the cookie in the request cookies dictionary
+* You must use the environment variable ```SESSION_NAME``` to define the name of the cookie used for the Session ID
+
 In the first terminal:
+
 ```shell
 bob@dylan:~$ cat main_3.py
 #!/usr/bin/env python3
@@ -409,7 +424,9 @@ bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000"
 Cookie value: None
@@ -430,17 +447,22 @@ bob@dylan:~$
 >- File: ```api/v1/auth/auth.py```
    
 ## ```5. Before request (mandatory)```
-Update the @app.before_request method in api/v1/app.py:
+Update the``` @app.before_request``` method in ```api/v1/app.py```:
 
-Add the URL path /api/v1/auth_session/login/ in the list of excluded paths of the method require_auth - this route doesn’t exist yet but it should be accessible outside authentication
-If auth.authorization_header(request) and auth.session_cookie(request) return None, abort(401)
+* Add the URL path ```/api/v1/auth_session/login/``` in the list of excluded paths of the method ```require_auth``` - this route doesn’t exist yet but it should be accessible outside authentication
+* If ```auth.authorization_header(request)``` and ```auth.session_cookie(request)``` return ```None```, ```abort(401)```
+
 In the first terminal:
+
+
 ```shell
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/status"
 {
