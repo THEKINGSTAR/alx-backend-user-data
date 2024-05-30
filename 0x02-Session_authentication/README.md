@@ -495,12 +495,13 @@ bob@dylan:~$
 >- File: ```api/v1/app.py```
    
 ## ```6. Use Session ID for identifying a User (mandatory)```
-Update SessionAuth class:
+Update ```SessionAuth``` class:
 
-Create an instance method def current_user(self, request=None): (overload) that returns a User instance based on a cookie value:
+Create an instance method ```def current_user(self, request=None):``` (overload) that returns a ```User``` instance based on a cookie value:
 
-You must use self.session_cookie(...) and self.user_id_for_session_id(...) to return the User ID based on the cookie _my_session_id
-By using this User ID, you will be able to retrieve a User instance from the database - you can use User.get(...) for retrieving a User from the database.
+* You must use ```self.session_cookie(...)``` and ```self.user_id_for_session_id(...)``` to return the User ID based on the cookie ```_my_session_id```
+* By using this ```User``` ID, you will be able to retrieve a User instance from the database - you can use ```User.get(...)``` for retrieving a ```User``` from the database.
+
 Now, you will be able to get a User based on his session ID.
 
 In the first terminal:
@@ -568,29 +569,36 @@ bob@dylan:~$
 ## ```7. New view for Session Authentication (mandatory)```
 Create a new Flask view that handles all routes for the Session authentication.
 
-In the file api/v1/views/session_auth.py, create a route POST /auth_session/login (= POST /api/v1/auth_session/login):
+In the file ```api/v1/views/session_auth.py```, create a route ```POST /auth_session/login``` (= ```POST /api/v1/auth_session/login```):
 
-Slash tolerant (/auth_session/login == /auth_session/login/)
-You must use request.form.get() to retrieve email and password parameters
-If email is missing or empty, return the JSON { "error": "email missing" } with the status code 400
-If password is missing or empty, return the JSON { "error": "password missing" } with the status code 400
-Retrieve the User instance based on the email - you must use the class method search of User (same as the one used for the BasicAuth)
-If no User found, return the JSON { "error": "no user found for this email" } with the status code 404
-If the password is not the one of the User found, return the JSON { "error": "wrong password" } with the status code 401 - you must use is_valid_password from the User instance
-Otherwise, create a Session ID for the User ID:
-You must use from api.v1.app import auth - WARNING: please import it only where you need it - not on top of the file (can generate circular import - and break first tasks of this project)
-You must use auth.create_session(..) for creating a Session ID
-Return the dictionary representation of the User - you must use to_json() method from User
-You must set the cookie to the response - you must use the value of the environment variable SESSION_NAME as cookie name - tip
-In the file api/v1/views/__init__.py, you must add this new view at the end of the file.
+* Slash tolerant (```/auth_session/login``` == ```/auth_session/login/```)
+You must use ```request.form.get()``` to retrieve ```email``` and ```password``` parameters
+* If ```email``` is missing or empty, return the JSON ```{ "error": "email missing" }``` with the status code ```400```
+* If ```password``` is missing or empty, return the JSON ```{ "error": "password missing" }``` with the status code ```400```
+* Retrieve the ```User``` instance based on the email - you must use the class method ```search``` of ```User``` (same as the one used for the ```BasicAuth```)
+
+  * If no ```User``` found, return the JSON ```{ "error": "no user found for this email" }``` with the status code ```404```
+
+  * If the ```password``` is not the one of the ```User``` found, return the JSON ```{ "error": "wrong password" }``` with the status code ```401``` - you must use ```is_valid_password``` from the ```User``` instance
+
+  * Otherwise, create a Session ID for the ```User``` ID:
+    * You must use ```from api.v1.app import auth``` - WARNING: please import it only where you need it - not on top of the file (can generate circular import - and break first tasks of this project)
+    * You must use ```auth.create_session(..)``` for creating a Session ID
+    * Return the dictionary representation of the ```User``` - you must use ``to_json()`` method from User
+    * You must set the cookie to the response - you must use the value of the environment variable ```SESSION_NAME``` as cookie name - tip
+
+In the file ```api/v1/views/__init__.py```, you must add this new view at the end of the file.
 
 In the first terminal:
+
 ```shell
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XGET
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
@@ -671,15 +679,15 @@ bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id
 }
 bob@dylan:~$
 Now you have an authentication based on a Session ID stored in cookie, perfect for a website (browsers love cookies).
-
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
 >- File: ```api/v1/views/session_auth.py, api/v1/views/__init__.py```
    
 ## ```8. Logout (mandatory)```
-Update the class SessionAuth by adding a new method def destroy_session(self, request=None): that deletes the user session / logout:
+Update the class ```SessionAuth``` by adding a new method def destroy_session(self, request=None): that deletes the user session / logout:
 
 If the request is equal to None, return False
 If the request doesn’t contain the Session ID cookie, return False - you must use self.session_cookie(request)
@@ -692,13 +700,17 @@ You must use from api.v1.app import auth
 You must use auth.destroy_session(request) for deleting the Session ID contains in the request as cookie:
 If destroy_session returns False, abort(404)
 Otherwise, return an empty JSON dictionary with the status code 200
+
 In the first terminal:
+
 ```shell
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_auth SESSION_NAME=_my_session_id python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd" -vvv
 Note: Unnecessary use of -X or --request, POST is already inferred.
@@ -759,8 +771,8 @@ bob@dylan:~$
 Login, logout… what’s else?
 
 Now, after getting a Session ID, you can request all protected API routes by using this Session ID, no need anymore to send User email and password every time.
-
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
@@ -768,40 +780,46 @@ Now, after getting a Session ID, you can request all protected API routes by usi
    
 ## ```9. Expiration? (#advanced)```
 Actually you have 2 authentication systems:
+* Basic authentication
+* Session authentication
 
-Basic authentication
-Session authentication
 Now you will add an expiration date to a Session ID.
 
-Create a class SessionExpAuth that inherits from SessionAuth in the file api/v1/auth/session_exp_auth.py:
+Create a class SessionExpAuth that inherits from SessionAuth in the file ```api/v1/auth/session_exp_auth.py```:
 
-Overload def __init__(self): method:
-Assign an instance attribute session_duration:
-To the environment variable SESSION_DURATION casts to an integer
-If this environment variable doesn’t exist or can’t be parse to an integer, assign to 0
-Overload def create_session(self, user_id=None):
-Create a Session ID by calling super() - super() will call the create_session() method of SessionAuth
-Return None if super() can’t create a Session ID
-Use this Session ID as key of the dictionary user_id_by_session_id - the value for this key must be a dictionary (called “session dictionary”):
-The key user_id must be set to the variable user_id
-The key created_at must be set to the current datetime - you must use datetime.now()
-Return the Session ID created
-Overload def user_id_for_session_id(self, session_id=None):
-Return None if session_id is None
-Return None if user_id_by_session_id doesn’t contain any key equals to session_id
-Return the user_id key from the session dictionary if self.session_duration is equal or under 0
-Return None if session dictionary doesn’t contain a key created_at
-Return None if the created_at + session_duration seconds are before the current datetime. datetime - timedelta
-Otherwise, return user_id from the session dictionary
-Update api/v1/app.py to instantiate auth with SessionExpAuth if the environment variable AUTH_TYPE is equal to session_exp_auth.
+* Overload ```def __init__(self): method:```
+  * Assign an instance attribute ```session_duration```:
+    * To the environment variable ```SESSION_DURATION``` casts to an integer
+    * If this environment variable doesn’t exist or can’t be parse to an integer, assign to 0
+
+* Overload ```def create_session(self, user_id=None):```
+  * Create a Session ID by calling ```super()``` - ```super()``` will call the ```create_session()``` method of ```SessionAuth```
+  * Return ```None``` if ```super()``` can’t create a Session ID
+  * Use this Session ID as key of the dictionary ```user_id_by_session_id``` - the value for this key must be a dictionary (called “session dictionary”):
+    * The key ```user_id``` must be set to the variable ```user_id```
+    * The key ```created_at``` must be set to the current datetime - you must use ```datetime.now()```
+  * Return the Session ID created
+
+* Overload ```def user_id_for_session_id(self, session_id=None):```
+  * Return ```None``` if ```session_id``` is ```None```
+  * Return ```None``` if ```user_id_by_session_id``` doesn’t contain any key equals to ```session_id```
+  * Return the ```user_id``` key from the session dictionary if``` self.session_duration``` is equal or under 0
+  * Return ```None``` if session dictionary doesn’t contain a key ```created_at```
+  * Return ```None``` if the ```created_at``` + ```session_duration``` seconds are before the current datetime. ```datetime``` - ```timedelta```
+  * Otherwise, return ```user_id``` from the session dictionary
+
+Update ```api/v1/app.py``` to instantiate auth with ```SessionExpAuth``` if the environment variable ```AUTH_TYPE``` is equal to ```session_exp_auth```.
 
 In the first terminal:
+
 ```shell
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_exp_auth SESSION_NAME=_my_session_id SESSION_DURATION=60 python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd" -vvv
 Note: Unnecessary use of -X or --request, POST is already inferred.
@@ -865,6 +883,7 @@ bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id
 }
 bob@dylan:~$
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
@@ -888,12 +907,15 @@ Overload def destroy_session(self, request=None): that destroys the UserSession 
 Update api/v1/app.py to instantiate auth with SessionDBAuth if the environment variable AUTH_TYPE is equal to session_db_auth.
 
 In the first terminal:
+
 ```shell
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=session_db_auth SESSION_NAME=_my_session_id SESSION_DURATION=60 python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
 ```
+
 In a second terminal:
+
 ```shell
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/auth_session/login" -XPOST -d "email=bobsession@hbtn.io" -d "password=fake pwd" -vvv
 Note: Unnecessary use of -X or --request, POST is already inferred.
@@ -957,6 +979,7 @@ bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/users/me" --cookie "_my_session_id
 }
 bob@dylan:~$
 ```
+
 ## ```Repo:```
 >- GitHub repository: ```alx-backend-user-data```
 >- Directory: ```0x02-Session_authentication```
